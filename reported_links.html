@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reported Links :: Link Pulse</title>
+    <style>
+        :root {
+            --bg-color: #f0f4f8;
+            --text-color: #2c3e50;
+            --primary-accent: #3498db;
+            --secondary-accent: #e74c3c;
+            --card-bg-color: #ffffff;
+            --card-border-color: #dfe6e9;
+            --button-bg-color: var(--primary-accent);
+            --button-text-color: #ffffff;
+            --button-hover-bg-color: #2980b9;
+            --clear-button-bg: var(--secondary-accent);
+            --clear-button-hover-bg: #c0392b;
+            --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            --glow-color: rgba(52, 152, 219, 0.7);
+            --reason-text-color: #7f8c8d; 
+        }
+
+        body.dark-mode {
+            --bg-color: #1a1d24;
+            --text-color: #e0e6f0;
+            --primary-accent: #00aeff;
+            --secondary-accent: #ff4757;
+            --card-bg-color: #2c303a;
+            --card-border-color: #3e4452;
+            --button-bg-color: var(--primary-accent);
+            --button-hover-bg-color: #007acc;
+            --clear-button-bg: var(--secondary-accent);
+            --clear-button-hover-bg: #d63031;
+            --glow-color: rgba(0, 174, 255, 0.7);
+            --reason-text-color: #95a5a6;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 10px; 
+            transition: background-color 0.3s ease, color 0.3s ease;
+            line-height: 1.6;
+        }
+
+        .container { max-width: 800px; margin: 0 auto; padding: 10px; }
+        @media (min-width: 640px) { body, .container { padding: 20px; } }
+
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid var(--card-border-color); padding-bottom: 15px; flex-wrap: wrap; }
+        h1 { color: var(--primary-accent); font-size: 1.8em; margin: 0 0 10px 0; text-shadow: 0 0 5px var(--glow-color); flex-basis: 100%; text-align: center; }
+        .header-controls { display: flex; gap: 8px; align-items: center; width: 100%; justify-content: center; }
+        @media (min-width: 600px) { h1 { font-size: 2em; flex-basis: auto; text-align: left; margin-bottom: 0;} header { margin-bottom: 30px; flex-wrap: nowrap; } .header-controls { width: auto; justify-content: flex-end; gap: 10px; } }
+
+        .button, #themeSwitcherButton, #clearReportsButton { background-color: var(--button-bg-color); color: var(--button-text-color); border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-size: 0.9em; transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease; text-align: center; flex-grow: 1; flex-basis: calc(50% - 10px); }
+        @media (min-width: 480px) { .button, #themeSwitcherButton, #clearReportsButton { flex-grow: 0; flex-basis: auto; } }
+        #clearReportsButton { background-color: var(--clear-button-bg); width: 100%; margin-bottom: 20px; flex-grow: 0; flex-basis: 100%;}
+        @media (min-width: 480px) { #clearReportsButton { width: auto; flex-basis: auto; } }
+        .button:hover, #themeSwitcherButton:hover, #clearReportsButton:hover:not(:disabled) { background-color: var(--button-hover-bg-color); transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        #clearReportsButton:hover:not(:disabled) { background-color: var(--clear-button-hover-bg); }
+        #clearReportsButton:disabled { background-color: var(--card-border-color); color: var(--text-color); cursor: not-allowed; opacity: 0.7; }
+        #themeSwitcherButton { min-width: auto; padding: 10px 12px; }
+        .nav-link { color: var(--primary-accent); text-decoration: none; padding: 10px 12px; border-radius: 5px; transition: background-color 0.2s ease; font-size: 0.9em; }
+        .nav-link:hover { background-color: var(--card-border-color); text-decoration: underline; }
+
+        .reported-link-item { background-color: var(--card-bg-color); border: 1px solid var(--card-border-color); border-left: 5px solid var(--secondary-accent); padding: 12px 15px; margin-bottom: 10px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .reported-link-item a { color: var(--primary-accent); text-decoration: none; display: block; word-break: break-all; margin-bottom: 5px; font-weight: 500; }
+        .reported-link-item a:hover { text-decoration: underline; }
+        .reported-link-item .reason { font-size: 0.9em; color: var(--reason-text-color); font-style: italic; margin-bottom: 3px; }
+        .reported-link-item .timestamp { font-size: 0.75em; color: var(--reason-text-color); margin-top: 5px; display: block; text-align: right; }
+        #noReportsMessage { color: var(--text-color); text-align: center; padding: 20px; background-color: var(--card-bg-color); border-radius: 5px; border: 1px dashed var(--card-border-color); font-size: 0.95em; }
+        #loadingMessage { color: var(--text-color); text-align: center; padding: 20px; font-size: 1.1em;}
+        .message-area.error { /* For displaying errors on this page too */
+            padding: 10px; margin-top: 10px; border-radius: 5px; text-align: center; font-size: 0.9em;
+            color: var(--secondary-accent); background-color: rgba(255, 71, 87, 0.1);
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Reported Links</h1>
+            <div class="header-controls">
+                <a href="link_checker.html" class="nav-link">Back to Checker</a>
+                <button id="themeSwitcherButton">Switch to Dark Mode</button>
+            </div>
+        </header>
+
+        <button id="clearReportsButton">Clear All Reports</button>
+        <p id="loadingMessage">Loading reported links...</p>
+        <div id="reported-links-container"></div>
+        <p id="noReportsMessage" style="display:none;">No reported links found.</p>
+        <p id="errorMessage" class="message-area error" style="display:none;"></p>
+
+    </div>
+
+    <script>
+        const themeSwitcherButton = document.getElementById('themeSwitcherButton');
+        const body = document.body;
+        const reportedLinksContainer = document.getElementById('reported-links-container');
+        const clearReportsButton = document.getElementById('clearReportsButton');
+        const noReportsMessage = document.getElementById('noReportsMessage');
+        const loadingMessage = document.getElementById('loadingMessage');
+        const errorMessageElement = document.getElementById('errorMessage');
+
+        // IMPORTANT: Replace this with your actual deployed Cloudflare Worker URL
+        const API_BASE_URL = 'YOUR_CLOUDFLARE_WORKER_URL_HERE';
+        // Example: const API_BASE_URL = 'https://my-link-reporter.yourusername.workers.dev';
+
+
+        function applyTheme(theme) {
+            if (theme === 'dark') {
+                body.classList.add('dark-mode');
+                themeSwitcherButton.textContent = 'Switch to Light Mode';
+            } else {
+                body.classList.remove('dark-mode');
+                themeSwitcherButton.textContent = 'Switch to Dark Mode';
+            }
+        }
+        
+        function displayError(message) {
+            errorMessageElement.textContent = message;
+            errorMessageElement.style.display = 'block';
+            loadingMessage.style.display = 'none';
+            noReportsMessage.style.display = 'none';
+            reportedLinksContainer.innerHTML = ''; 
+        }
+
+        async function displayReportedLinks() {
+            if (!API_BASE_URL || API_BASE_URL === 'YOUR_CLOUDFLARE_WORKER_URL_HERE') {
+                displayError("Reporting service URL is not configured.");
+                return;
+            }
+
+            loadingMessage.style.display = 'block';
+            noReportsMessage.style.display = 'none';
+            errorMessageElement.style.display = 'none';
+            reportedLinksContainer.innerHTML = ''; 
+            clearReportsButton.disabled = true; 
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/reports`); // Ensure Worker handles GET /reports
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch reports: ${response.status} ${response.statusText}`);
+                }
+                const reportedLinks = await response.json();
+                loadingMessage.style.display = 'none';
+
+                if (reportedLinks.length === 0) {
+                    noReportsMessage.style.display = 'block';
+                } else {
+                    clearReportsButton.disabled = false;
+                    // Worker should ideally sort, but client-side sort as fallback
+                    reportedLinks.sort((a, b) => new Date(b.reportedAt) - new Date(a.reportedAt));
+                    reportedLinks.forEach(report => {
+                        const listItem = document.createElement('div');
+                        listItem.classList.add('reported-link-item');
+                        const reportedDate = new Date(report.reportedAt);
+                        const formattedDate = reportedDate.toLocaleString(undefined, { 
+                            year: 'numeric', month: 'short', day: 'numeric', 
+                            hour: '2-digit', minute: '2-digit' 
+                        });
+                        listItem.innerHTML = `
+                            <a href="${report.url}" target="_blank" rel="noopener noreferrer">${report.url}</a>
+                            <p class="reason">Reason: ${report.reason}</p>
+                            <span class="timestamp">Reported: ${formattedDate}</span>
+                        `;
+                        reportedLinksContainer.appendChild(listItem);
+                    });
+                }
+            } catch (error) {
+                console.error("Error fetching reported links:", error);
+                displayError(`Could not load reports: ${error.message}. Ensure the Cloudflare Worker is deployed and the URL is correct.`);
+            }
+        }
+
+        async function handleClearReports() {
+            if (!API_BASE_URL || API_BASE_URL === 'YOUR_CLOUDFLARE_WORKER_URL_HERE') {
+                alert("Reporting service URL is not configured."); // Simple alert for this action
+                return;
+            }
+            if (confirm('Are you sure you want to clear all reported links? This cannot be undone.')) {
+                try {
+                    // Ensure Worker handles POST /reports/clear or similar
+                    const response = await fetch(`${API_BASE_URL}/reports/clear`, { method: 'POST' }); 
+                    if (!response.ok) {
+                        const errorData = await response.json().catch(() => ({ message: `HTTP error ${response.status}` }));
+                        throw new Error(errorData.message || `Failed to clear reports: ${response.statusText}`);
+                    }
+                    alert('Reports cleared successfully!'); 
+                    displayReportedLinks(); 
+                } catch (error) {
+                    console.error("Error clearing reports:", error);
+                    alert(`Error clearing reports: ${error.message}`); 
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme') || 'dark'; 
+            applyTheme(savedTheme);
+
+            themeSwitcherButton.addEventListener('click', () => {
+                const currentTheme = body.classList.contains('dark-mode') ? 'dark' : 'light';
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                applyTheme(newTheme);
+                localStorage.setItem('theme', newTheme);
+            });
+
+            clearReportsButton.addEventListener('click', handleClearReports);
+            displayReportedLinks();
+        });
+    </script>
+</body>
+</html>
