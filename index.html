@@ -17,15 +17,11 @@
             --button-bg-color: var(--primary-accent);
             --button-text-color: #ffffff;
             --button-hover-bg-color: #2980b9;
-            --report-button-bg: var(--warning-accent); 
-            --report-button-hover-bg: #d35400;
             --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             --glow-color: rgba(52, 152, 219, 0.7);
             --progress-bar-bg: var(--card-border-color);
             --progress-bar-fill-bg: var(--success-color);
             --progress-bar-text-color: var(--button-text-color);
-            --modal-bg-color: rgba(0, 0, 0, 0.6);
-            --modal-content-bg: var(--card-bg-color);
         }
 
         body.dark-mode {
@@ -39,13 +35,10 @@
             --card-border-color: #3e4452;
             --button-bg-color: var(--primary-accent);
             --button-hover-bg-color: #007acc;
-            --report-button-bg: var(--warning-accent);
-            --report-button-hover-bg: #e67e22;
             --glow-color: rgba(0, 174, 255, 0.7);
             --progress-bar-bg: #3e4452;
             --progress-bar-fill-bg: var(--success-color);
             --progress-bar-text-color: #1a1d24;
-            --modal-content-bg: var(--card-bg-color);
         }
 
         body {
@@ -83,12 +76,12 @@
             text-align: center;
         }
         
-        .header-controls {
+        .header-controls { /* Renamed from .header-controls for clarity */
             display: flex;
             gap: 8px;
             align-items: center;
             width: 100%;
-            justify-content: center;
+            justify-content: center; /* Center theme switcher if it's the only item */
         }
         
         @media (min-width: 640px) {
@@ -107,7 +100,7 @@
             align-items: center; 
         }
 
-        .button, .filter-button, #themeSwitcherButton, .report-button, .modal-button {
+        .button, .filter-button, #themeSwitcherButton { /* Removed .report-button, .modal-button */
             background-color: var(--button-bg-color);
             color: var(--button-text-color);
             border: none;
@@ -118,17 +111,16 @@
             transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
             text-align: center;
             flex-grow: 1;
-            flex-basis: calc(50% - 10px); /* Two buttons per row on small screens, considering gap */
+            flex-basis: calc(50% - 10px); 
         }
-         @media (min-width: 480px) { /* Adjust breakpoint for when buttons no longer need to be 50% width */
-            .button, .filter-button, #themeSwitcherButton, .report-button, .modal-button {
+         @media (min-width: 480px) { 
+            .button, .filter-button, #themeSwitcherButton {
                  flex-grow: 0; 
                  flex-basis: auto;
             }
          }
 
-        .button:hover, .filter-button:hover, #themeSwitcherButton:hover, 
-        .report-button:hover:not(:disabled), .modal-button:hover:not(:disabled) {
+        .button:hover, .filter-button:hover, #themeSwitcherButton:hover {
             background-color: var(--button-hover-bg-color);
             transform: translateY(-2px);
             box-shadow: 0 4px 10px rgba(0,0,0,0.2);
@@ -136,102 +128,31 @@
 
         #themeSwitcherButton { min-width: auto; padding: 10px 12px; }
         
-        .nav-link { 
-            color: var(--primary-accent);
-            text-decoration: none;
-            padding: 10px 12px;
-            border-radius: 5px;
-            transition: background-color 0.2s ease;
-            font-size: 0.9em;
-        }
-        .nav-link:hover { background-color: var(--card-border-color); text-decoration: underline; }
+        /* Removed .nav-link styles as the "View Reports" link is gone */
 
-        .report-button {
-            background-color: var(--report-button-bg);
-            padding: 6px 10px; 
-            font-size: 0.8em;
-            margin-left: auto; /* Pushes report button to the right of status in status-block */
-            flex-grow: 0; /* Prevent report button from growing */
-            flex-basis: auto; /* Natural width */
-        }
-        .report-button:hover:not(:disabled) { background-color: var(--report-button-hover-bg); }
-        .report-button:disabled {
-            background-color: var(--card-border-color);
-            color: var(--text-color);
-            cursor: not-allowed;
-            opacity: 0.7;
-        }
-
-        .progress-bar-container { 
-            width: 100%; 
-            background-color: var(--progress-bar-bg); 
-            border-radius: 8px; 
-            height: 24px; 
-            margin-bottom: 25px; 
-            overflow: hidden; 
-            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1); 
-        }
-        #progressBarFill { 
-            width: 0%; 
-            height: 100%; 
-            background-color: var(--progress-bar-fill-bg); 
-            border-radius: 8px; 
-            transition: width 0.4s ease-in-out, background-color 0.3s ease; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            color: var(--progress-bar-text-color); 
-            font-size: 0.85em; 
-            font-weight: 600; 
-        }
-        .link-item { 
-            background-color: var(--card-bg-color); 
-            border: 1px solid var(--card-border-color); 
-            border-left: 5px solid var(--primary-accent); 
-            padding: 10px 12px; 
-            margin-bottom: 15px; 
-            border-radius: 5px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            transition: background-color 0.3s ease, border-color 0.3s ease; 
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05); 
-            flex-wrap: wrap;  
-        }
-        .link-info { 
-            flex-grow: 1;  
-            margin-right: 10px;  
-            word-break: break-all; 
-            font-size: 0.9em; 
-            padding-bottom: 5px; /* Space if status wraps */
-        }
-        .link-item a { 
-            color: var(--primary-accent); 
-            text-decoration: none; 
-            font-weight: 500; 
-        }
+        .progress-bar-container { width: 100%; background-color: var(--progress-bar-bg); border-radius: 8px; height: 24px; margin-bottom: 25px; overflow: hidden; box-shadow: inset 0 1px 3px rgba(0,0,0,0.1); }
+        #progressBarFill { width: 0%; height: 100%; background-color: var(--progress-bar-fill-bg); border-radius: 8px; transition: width 0.4s ease-in-out, background-color 0.3s ease; display: flex; align-items: center; justify-content: center; color: var(--progress-bar-text-color); font-size: 0.85em; font-weight: 600; }
+        .link-item { background-color: var(--card-bg-color); border: 1px solid var(--card-border-color); border-left: 5px solid var(--primary-accent); padding: 10px 12px; margin-bottom: 15px; border-radius: 5px; display: flex; justify-content: space-between; align-items: center; transition: background-color 0.3s ease, border-color 0.3s ease; box-shadow: 0 2px 5px rgba(0,0,0,0.05); flex-wrap: wrap;  }
+        .link-info { flex-grow: 1;  margin-right: 10px;  word-break: break-all; font-size: 0.9em; padding-bottom: 5px; }
+        .link-item a { color: var(--primary-accent); text-decoration: none; font-weight: 500; }
         .link-item a:hover { text-decoration: underline; }
         
-        .status-block { 
+        .status-block { /* Simplified, as report button is gone */
             display: flex; 
             align-items: center; 
             flex-shrink: 0;  
-            margin-top: 5px;  /* Space when it wraps below link-info */
-            width: 100%; /* Take full width when wrapped */
-            justify-content: space-between; /* Space between status and report button */
+            margin-top: 5px;  
+            width: 100%; 
+            justify-content: flex-start; /* Align status to the start */
         }
         @media (min-width: 480px) { 
             .link-info { 
-                font-size: 1em; /* Restore font size for larger screens */
-                padding-bottom: 0; /* No extra padding if not wrapped */
+                font-size: 1em; 
+                padding-bottom: 0; 
             } 
             .status-block { 
                 margin-top: 0; 
-                width: auto; /* Natural width on larger screens */
-                justify-content: flex-start; /* Align items to start on larger screens */
-            } 
-            .report-button { 
-                margin-left: 10px; /* Restore margin for larger screens */
+                width: auto; 
             } 
         }
         .status { 
@@ -278,83 +199,7 @@
             background-color: rgba(0, 174, 255, 0.1); 
         }
 
-        /* Modal Styles */
-        .modal {
-            display: none; 
-            position: fixed; 
-            z-index: 1000; 
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto; 
-            background-color: var(--modal-bg-color);
-        }
-
-        .modal-content {
-            background-color: var(--modal-content-bg);
-            margin: 10% auto; /* Adjusted margin for better centering on various screen heights */
-            padding: 20px; /* Slightly reduced padding */
-            border: 1px solid var(--card-border-color);
-            border-radius: 8px;
-            width: 90%;
-            max-width: 450px; /* Slightly reduced max-width */
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            position: relative;
-        }
-
-        .modal-close-button {
-            color: var(--text-color);
-            float: right;
-            font-size: 24px; /* Slightly smaller close button */
-            font-weight: bold;
-            line-height: 1;
-        }
-        .modal-close-button:hover,
-        .modal-close-button:focus {
-            color: var(--secondary-accent);
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        .modal h2 {
-            margin-top: 0;
-            color: var(--primary-accent);
-            font-size: 1.4em; /* Adjusted font size */
-            margin-bottom: 15px; /* Adjusted margin */
-        }
-        .modal-options label {
-            display: block;
-            margin-bottom: 10px; /* Adjusted margin */
-            cursor: pointer;
-            font-size: 0.95em; /* Adjusted font size */
-        }
-        .modal-options input[type="radio"] {
-            margin-right: 8px;
-            accent-color: var(--primary-accent); 
-        }
-        .modal-footer {
-            margin-top: 20px; /* Adjusted margin */
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-        }
-        .modal-button { /* Ensure modal buttons also have base styles if not covered by .button */
-             flex-grow: 0; /* Modal buttons shouldn't grow like filter buttons */
-             flex-basis: auto;
-        }
-        .modal-button.submit {
-            background-color: var(--success-color);
-        }
-        .modal-button.submit:hover {
-            background-color: #27ae60; 
-        }
-        .modal-button.cancel {
-            background-color: var(--secondary-accent);
-        }
-        .modal-button.cancel:hover {
-            background-color: #c0392b; 
-        }
+        /* Modal Styles Removed */
 
     </style>
 </head>
@@ -363,7 +208,6 @@
         <header>
             <h1>Link Pulse</h1>
             <div class="header-controls">
-                <a href="reported_links.html" class="nav-link">View Reports</a>
                 <button id="themeSwitcherButton">Switch to Dark Mode</button>
             </div>
         </header>
@@ -377,31 +221,9 @@
             <div id="progressBarFill">Loading...</div>
         </div>
 
-        <div id="link-container">
-            </div>
+        <div id="link-container"></div>
         <div id="messageArea" class="message-area" style="display: none;"></div>
-
     </div>
-
-    <div id="reportModal" class="modal">
-        <div class="modal-content">
-            <span class="modal-close-button" id="modalCloseButton">&times;</span>
-            <h2>Report Link</h2>
-            <p id="modalLinkToReport" style="word-break: break-all; margin-bottom: 15px; font-size: 0.9em;"></p>
-            <form id="reportReasonForm">
-                <div class="modal-options">
-                    <label><input type="radio" name="reportReason" value="Not an FTP site" required> Not an FTP site</label>
-                    <label><input type="radio" name="reportReason" value="Not accessible (despite checker)"> Not accessible (despite checker)</label>
-                    <label><input type="radio" name="reportReason" value="Other reason"> Other reason</label>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" id="modalCancelButton" class="modal-button cancel">Cancel</button>
-                    <button type="submit" id="modalSubmitReportButton" class="modal-button submit">Submit Report</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
 
     <script>
         // DOM Elements
@@ -412,21 +234,13 @@
         const filterButton = document.getElementById('filterAccessibleButton');
         const showAllButton = document.getElementById('showAllButton');
         const messageArea = document.getElementById('messageArea');
-        // Modal DOM Elements
-        const reportModal = document.getElementById('reportModal');
-        const modalCloseButton = document.getElementById('modalCloseButton');
-        const modalCancelButton = document.getElementById('modalCancelButton');
-        const reportReasonForm = document.getElementById('reportReasonForm');
-        const modalLinkToReportElement = document.getElementById('modalLinkToReport');
-
+        // Modal DOM Elements Removed
 
         // App State
         let linksToCheck = [];
         let checkedLinksCount = 0;
         let totalLinks = 0;
-        const REPORTED_LINKS_KEY = 'reportedLinks'; 
-        let currentUrlToReport = null; 
-        let currentReportButtonElement = null; 
+        // Reporting related state removed (currentUrlToReport, currentReportButtonElement, reportedLinksCache, API_BASE_URL)
 
 
         // --- Utility Functions ---
@@ -434,14 +248,15 @@
             messageArea.textContent = text; 
             messageArea.className = `message-area ${type}`; 
             messageArea.style.display = 'block'; 
+            if (type === 'error' || type === 'info') {
+                setTimeout(clearMessage, 5000); 
+            }
         }
-
         function clearMessage() { 
             messageArea.style.display = 'none'; 
             messageArea.textContent = ''; 
             messageArea.className = 'message-area'; 
         }
-
         function updateProgressBar() { 
             const percentage = totalLinks > 0 ? (checkedLinksCount / totalLinks) * 100 : 0; 
             progressBarFillElement.style.width = percentage + '%'; 
@@ -453,7 +268,6 @@
                 progressBarFillElement.textContent = 'No links to check.'; 
             } 
         }
-
         function applyTheme(theme) { 
             if (theme === 'dark') { 
                 body.classList.add('dark-mode'); 
@@ -464,93 +278,57 @@
             } 
         }
 
-        // --- Reporting Logic ---
-        function getReportedLinks() {
-            const stored = localStorage.getItem(REPORTED_LINKS_KEY);
-            return stored ? JSON.parse(stored) : [];
-        }
-
-        function storeReportedLink(url, reason) {
-            let reportedLinks = getReportedLinks();
-            if (!reportedLinks.some(report => report.url === url)) {
-                reportedLinks.push({ url: url, reason: reason, reportedAt: new Date().toISOString() });
-                localStorage.setItem(REPORTED_LINKS_KEY, JSON.stringify(reportedLinks));
-            }
-        }
-
-        function openReportModal(url, buttonElement) {
-            currentUrlToReport = url;
-            currentReportButtonElement = buttonElement;
-            modalLinkToReportElement.textContent = `URL: ${url}`;
-            reportReasonForm.reset(); 
-            reportModal.style.display = 'block';
-        }
-
-        function closeReportModal() {
-            reportModal.style.display = 'none';
-            currentUrlToReport = null;
-            currentReportButtonElement = null;
-        }
+        // --- Reporting Logic Removed ---
+        // Functions like fetchReportedLinks, storeReportedLinkOnServer, openReportModal, closeReportModal are removed.
 
         // --- Link Checking Logic ---
         async function checkLink(url, listItem) {
             const statusElement = listItem.querySelector('.status');
-            const reportButton = listItem.querySelector('.report-button');
+            // Report button related logic removed
             
-            reportButton.style.display = 'none'; 
             statusElement.textContent = '...';
             statusElement.className = 'status checking';
 
             try {
                 const response = await fetch(url, {
                     method: 'HEAD',
-                    mode: 'no-cors',
+                    mode: 'no-cors', 
                     signal: AbortSignal.timeout(5000)
                 });
 
                 if (response.type === 'opaque' || response.ok) {
                     statusElement.textContent = '✔';
                     statusElement.className = 'status accessible';
-                    reportButton.style.display = 'inline-block'; 
+                    // No report button to show
                 } else {
                     statusElement.textContent = '❓';
                     statusElement.className = 'status uncertain'; 
-                    reportButton.style.display = 'none'; 
-                    console.warn(`Possible issue or non-OK status for ${url}: ${response.status}`);
+                    // No report button to hide
                 }
             } catch (error) {
                 statusElement.textContent = '❌';
                 statusElement.className = 'status inaccessible';
-                reportButton.style.display = 'none'; 
-                console.error(`Error checking ${url}:`, error.name === 'AbortError' ? 'Timeout' : error);
+                // No report button to hide
             } finally {
                 checkedLinksCount++;
                 updateProgressBar();
-                
-                const reportedLinks = getReportedLinks();
-                const isAlreadyReported = reportedLinks.some(report => report.url === url);
-
-                if (reportButton.style.display === 'inline-block' && isAlreadyReported) {
-                    reportButton.textContent = 'Reported';
-                    reportButton.disabled = true;
-                }
+                // No logic needed for checking if already reported
             }
         }
 
         // --- Initialization ---
         async function initializeApp() {
-            // 1. Apply theme
             const savedTheme = localStorage.getItem('theme') || 'dark';
             applyTheme(savedTheme);
 
-            // 2. Setup Event Listeners
+            // Reporting related fetches (fetchReportedLinks) removed
+
             themeSwitcherButton.addEventListener('click', () => { 
                 const currentTheme = body.classList.contains('dark-mode') ? 'dark' : 'light'; 
                 const newTheme = currentTheme === 'dark' ? 'light' : 'dark'; 
                 applyTheme(newTheme); 
                 localStorage.setItem('theme', newTheme); 
             });
-
             filterButton.addEventListener('click', () => { 
                 clearMessage(); 
                 const linkItems = linkContainer.querySelectorAll('.link-item'); 
@@ -558,57 +336,24 @@
                 linkItems.forEach(item => { 
                     const statusElement = item.querySelector('.status'); 
                     if (statusElement && statusElement.classList.contains('accessible')) { 
-                        item.style.display = 'flex'; 
-                        accessibleFound = true; 
-                    } else { 
-                        item.style.display = 'none'; 
-                    } 
+                        item.style.display = 'flex'; accessibleFound = true; 
+                    } else { item.style.display = 'none'; } 
                 }); 
                 if (accessibleFound || linkItems.length > 0) { 
-                    filterButton.style.display = 'none'; 
-                    showAllButton.style.display = 'inline-block'; 
+                    filterButton.style.display = 'none'; showAllButton.style.display = 'inline-block'; 
                 } 
             });
-
             showAllButton.addEventListener('click', () => { 
                 clearMessage(); 
                 const linkItems = linkContainer.querySelectorAll('.link-item'); 
-                linkItems.forEach(item => { 
-                    item.style.display = 'flex'; 
-                }); 
-                showAllButton.style.display = 'none'; 
-                filterButton.style.display = 'inline-block'; 
+                linkItems.forEach(item => { item.style.display = 'flex'; }); 
+                showAllButton.style.display = 'none'; filterButton.style.display = 'inline-block'; 
             });
+            // Modal event listeners removed
 
-            modalCloseButton.onclick = closeReportModal;
-            modalCancelButton.onclick = closeReportModal;
-            window.onclick = function(event) { 
-                if (event.target == reportModal) {
-                    closeReportModal();
-                }
-            }
-            reportReasonForm.addEventListener('submit', function(event) {
-                event.preventDefault();
-                const selectedReason = reportReasonForm.elements.reportReason.value;
-                if (!selectedReason) {
-                    // More user-friendly feedback than alert if possible, but alert is simple
-                    displayMessage('Please select a reason for reporting.', 'error'); 
-                    return;
-                }
-                if (currentUrlToReport && currentReportButtonElement) {
-                    storeReportedLink(currentUrlToReport, selectedReason);
-                    currentReportButtonElement.textContent = 'Reported';
-                    currentReportButtonElement.disabled = true;
-                }
-                closeReportModal();
-            });
-
-            // 3. Fetch and process links
             try {
-                const response = await fetch('links.txt');
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}. Failed to load links.txt.`);
-                }
+                const response = await fetch('links.txt'); // Assuming links.txt is still used
+                if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}. Failed to load links.txt.`);
                 const textData = await response.text();
                 linksToCheck = textData.split('\n').map(link => link.trim()).filter(link => link);
                 totalLinks = linksToCheck.length;
@@ -616,44 +361,35 @@
                 updateProgressBar();
 
                 if (totalLinks === 0) { 
-                    displayMessage('No links found in the links.txt file.', 'info'); 
-                    progressBarFillElement.textContent = 'No links.'; 
-                    return; 
+                    displayMessage('No links found in links.txt.', 'info'); 
+                    progressBarFillElement.textContent = 'No links.'; return; 
                 }
 
                 linkContainer.innerHTML = '';
                 clearMessage();
-
                 linksToCheck.forEach(url => {
-                     if (!url.toLowerCase().startsWith('http://') && !url.toLowerCase().startsWith('https://')) {
-                        console.warn('Skipping invalid or non-HTTP(S) URL in links.txt:', url);
-                        // Optionally, you could decrement totalLinks and update progress bar here
-                        // if you want to completely exclude them from the count.
-                        // For now, checkLink will attempt to process it and likely mark it as an error.
+                    if (!url.toLowerCase().startsWith('http://') && !url.toLowerCase().startsWith('https://')) {
+                        console.warn('Skipping invalid URL in links.txt:', url);
                     }
-
                     const listItem = document.createElement('div');
                     listItem.classList.add('link-item');
+                    // Simplified innerHTML, no report button
                     listItem.innerHTML = `
                         <div class="link-info">
                             <a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>
                         </div>
                         <div class="status-block">
                             <span class="status checking">...</span>
-                            <button class="report-button" style="display:none;">Report</button>
                         </div>
                     `;
-                    const reportButtonElement = listItem.querySelector('.report-button');
-                    reportButtonElement.addEventListener('click', () => openReportModal(url, reportButtonElement));
-                    
+                    // No event listener for report button needed
                     linkContainer.appendChild(listItem);
-                    checkLink(url, listItem);
+                    checkLink(url, listItem); 
                 });
                 
                 if(totalLinks === 0 && textData.trim().length > 0) { 
-                    displayMessage('No valid links were found in the file to process.', 'info'); 
+                    displayMessage('No valid links found to process.', 'info'); 
                 }
-
             } catch (error) { 
                 console.error("Initialization Error:", error); 
                 displayMessage(`Error: ${error.message}`, 'error'); 
