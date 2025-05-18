@@ -118,9 +118,9 @@
             transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
             text-align: center;
             flex-grow: 1;
-            flex-basis: calc(50% - 10px); 
+            flex-basis: calc(50% - 10px); /* Two buttons per row on small screens, considering gap */
         }
-         @media (min-width: 480px) { 
+         @media (min-width: 480px) { /* Adjust breakpoint for when buttons no longer need to be 50% width */
             .button, .filter-button, #themeSwitcherButton, .report-button, .modal-button {
                  flex-grow: 0; 
                  flex-basis: auto;
@@ -150,9 +150,9 @@
             background-color: var(--report-button-bg);
             padding: 6px 10px; 
             font-size: 0.8em;
-            margin-left: auto; 
-            flex-grow: 0; 
-            flex-basis: auto; 
+            margin-left: auto; /* Pushes report button to the right of status in status-block */
+            flex-grow: 0; /* Prevent report button from growing */
+            flex-basis: auto; /* Natural width */
         }
         .report-button:hover:not(:disabled) { background-color: var(--report-button-hover-bg); }
         .report-button:disabled {
@@ -162,37 +162,200 @@
             opacity: 0.7;
         }
 
-        .progress-bar-container { width: 100%; background-color: var(--progress-bar-bg); border-radius: 8px; height: 24px; margin-bottom: 25px; overflow: hidden; box-shadow: inset 0 1px 3px rgba(0,0,0,0.1); }
-        #progressBarFill { width: 0%; height: 100%; background-color: var(--progress-bar-fill-bg); border-radius: 8px; transition: width 0.4s ease-in-out, background-color 0.3s ease; display: flex; align-items: center; justify-content: center; color: var(--progress-bar-text-color); font-size: 0.85em; font-weight: 600; }
-        .link-item { background-color: var(--card-bg-color); border: 1px solid var(--card-border-color); border-left: 5px solid var(--primary-accent); padding: 10px 12px; margin-bottom: 15px; border-radius: 5px; display: flex; justify-content: space-between; align-items: center; transition: background-color 0.3s ease, border-color 0.3s ease; box-shadow: 0 2px 5px rgba(0,0,0,0.05); flex-wrap: wrap;  }
-        .link-info { flex-grow: 1;  margin-right: 10px;  word-break: break-all; font-size: 0.9em; padding-bottom: 5px; }
-        .link-item a { color: var(--primary-accent); text-decoration: none; font-weight: 500; }
+        .progress-bar-container { 
+            width: 100%; 
+            background-color: var(--progress-bar-bg); 
+            border-radius: 8px; 
+            height: 24px; 
+            margin-bottom: 25px; 
+            overflow: hidden; 
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1); 
+        }
+        #progressBarFill { 
+            width: 0%; 
+            height: 100%; 
+            background-color: var(--progress-bar-fill-bg); 
+            border-radius: 8px; 
+            transition: width 0.4s ease-in-out, background-color 0.3s ease; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            color: var(--progress-bar-text-color); 
+            font-size: 0.85em; 
+            font-weight: 600; 
+        }
+        .link-item { 
+            background-color: var(--card-bg-color); 
+            border: 1px solid var(--card-border-color); 
+            border-left: 5px solid var(--primary-accent); 
+            padding: 10px 12px; 
+            margin-bottom: 15px; 
+            border-radius: 5px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            transition: background-color 0.3s ease, border-color 0.3s ease; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05); 
+            flex-wrap: wrap;  
+        }
+        .link-info { 
+            flex-grow: 1;  
+            margin-right: 10px;  
+            word-break: break-all; 
+            font-size: 0.9em; 
+            padding-bottom: 5px; /* Space if status wraps */
+        }
+        .link-item a { 
+            color: var(--primary-accent); 
+            text-decoration: none; 
+            font-weight: 500; 
+        }
         .link-item a:hover { text-decoration: underline; }
-        .status-block { display: flex; align-items: center; flex-shrink: 0;  margin-top: 5px;  width: 100%; justify-content: space-between; }
-        @media (min-width: 480px) { .link-info { font-size: 1em; padding-bottom: 0; } .status-block { margin-top: 0; width: auto; justify-content: flex-start; } .report-button { margin-left: 10px; } }
-        .status { font-size: 1.3em; font-weight: bold; padding: 5px 8px; border-radius: 5px; min-width: 35px; text-align: center; }
-        .status.accessible { color: var(--success-color); border: 1px solid var(--success-color); box-shadow: 0 0 8px var(--success-color); }
-        .status.uncertain {  color: var(--warning-accent); border: 1px solid var(--warning-accent); box-shadow: 0 0 8px var(--warning-accent); }
-        .status.inaccessible {  color: var(--secondary-accent); border: 1px solid var(--secondary-accent); box-shadow: 0 0 8px var(--secondary-accent); }
-        .status.checking { color: var(--text-color); border: 1px solid var(--text-color); opacity: 0.7; }
-        .message-area { padding: 10px; margin-top: 10px; border-radius: 5px; text-align: center; font-size: 0.9em; }
-        .message-area.error { color: var(--secondary-accent); background-color: rgba(255, 71, 87, 0.1); }
-        .message-area.info { color: var(--text-color); background-color: rgba(0, 174, 255, 0.1); }
+        
+        .status-block { 
+            display: flex; 
+            align-items: center; 
+            flex-shrink: 0;  
+            margin-top: 5px;  /* Space when it wraps below link-info */
+            width: 100%; /* Take full width when wrapped */
+            justify-content: space-between; /* Space between status and report button */
+        }
+        @media (min-width: 480px) { 
+            .link-info { 
+                font-size: 1em; /* Restore font size for larger screens */
+                padding-bottom: 0; /* No extra padding if not wrapped */
+            } 
+            .status-block { 
+                margin-top: 0; 
+                width: auto; /* Natural width on larger screens */
+                justify-content: flex-start; /* Align items to start on larger screens */
+            } 
+            .report-button { 
+                margin-left: 10px; /* Restore margin for larger screens */
+            } 
+        }
+        .status { 
+            font-size: 1.3em; 
+            font-weight: bold; 
+            padding: 5px 8px; 
+            border-radius: 5px; 
+            min-width: 35px; 
+            text-align: center; 
+        }
+        .status.accessible { 
+            color: var(--success-color); 
+            border: 1px solid var(--success-color); 
+            box-shadow: 0 0 8px var(--success-color); 
+        }
+        .status.uncertain {  
+            color: var(--warning-accent); 
+            border: 1px solid var(--warning-accent); 
+            box-shadow: 0 0 8px var(--warning-accent); 
+        }
+        .status.inaccessible {  
+            color: var(--secondary-accent); 
+            border: 1px solid var(--secondary-accent); 
+            box-shadow: 0 0 8px var(--secondary-accent); 
+        }
+        .status.checking { 
+            color: var(--text-color); 
+            border: 1px solid var(--text-color); 
+            opacity: 0.7; 
+        }
+        .message-area { 
+            padding: 10px; 
+            margin-top: 10px; 
+            border-radius: 5px; 
+            text-align: center; 
+            font-size: 0.9em; 
+        }
+        .message-area.error { 
+            color: var(--secondary-accent); 
+            background-color: rgba(255, 71, 87, 0.1); 
+        }
+        .message-area.info { 
+            color: var(--text-color); 
+            background-color: rgba(0, 174, 255, 0.1); 
+        }
 
         /* Modal Styles */
-        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: var(--modal-bg-color); }
-        .modal-content { background-color: var(--modal-content-bg); margin: 10% auto; padding: 20px; border: 1px solid var(--card-border-color); border-radius: 8px; width: 90%; max-width: 450px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); position: relative; }
-        .modal-close-button { color: var(--text-color); float: right; font-size: 24px; font-weight: bold; line-height: 1; }
-        .modal-close-button:hover, .modal-close-button:focus { color: var(--secondary-accent); text-decoration: none; cursor: pointer; }
-        .modal h2 { margin-top: 0; color: var(--primary-accent); font-size: 1.4em; margin-bottom: 15px; }
-        .modal-options label { display: block; margin-bottom: 10px; cursor: pointer; font-size: 0.95em; }
-        .modal-options input[type="radio"] { margin-right: 8px; accent-color: var(--primary-accent);  }
-        .modal-footer { margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px; }
-        .modal-button { flex-grow: 0; flex-basis: auto; }
-        .modal-button.submit { background-color: var(--success-color); }
-        .modal-button.submit:hover { background-color: #27ae60;  }
-        .modal-button.cancel { background-color: var(--secondary-accent); }
-        .modal-button.cancel:hover { background-color: #c0392b;  }
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 1000; 
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto; 
+            background-color: var(--modal-bg-color);
+        }
+
+        .modal-content {
+            background-color: var(--modal-content-bg);
+            margin: 10% auto; /* Adjusted margin for better centering on various screen heights */
+            padding: 20px; /* Slightly reduced padding */
+            border: 1px solid var(--card-border-color);
+            border-radius: 8px;
+            width: 90%;
+            max-width: 450px; /* Slightly reduced max-width */
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            position: relative;
+        }
+
+        .modal-close-button {
+            color: var(--text-color);
+            float: right;
+            font-size: 24px; /* Slightly smaller close button */
+            font-weight: bold;
+            line-height: 1;
+        }
+        .modal-close-button:hover,
+        .modal-close-button:focus {
+            color: var(--secondary-accent);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .modal h2 {
+            margin-top: 0;
+            color: var(--primary-accent);
+            font-size: 1.4em; /* Adjusted font size */
+            margin-bottom: 15px; /* Adjusted margin */
+        }
+        .modal-options label {
+            display: block;
+            margin-bottom: 10px; /* Adjusted margin */
+            cursor: pointer;
+            font-size: 0.95em; /* Adjusted font size */
+        }
+        .modal-options input[type="radio"] {
+            margin-right: 8px;
+            accent-color: var(--primary-accent); 
+        }
+        .modal-footer {
+            margin-top: 20px; /* Adjusted margin */
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        .modal-button { /* Ensure modal buttons also have base styles if not covered by .button */
+             flex-grow: 0; /* Modal buttons shouldn't grow like filter buttons */
+             flex-basis: auto;
+        }
+        .modal-button.submit {
+            background-color: var(--success-color);
+        }
+        .modal-button.submit:hover {
+            background-color: #27ae60; 
+        }
+        .modal-button.cancel {
+            background-color: var(--secondary-accent);
+        }
+        .modal-button.cancel:hover {
+            background-color: #c0392b; 
+        }
+
     </style>
 </head>
 <body>
@@ -214,8 +377,10 @@
             <div id="progressBarFill">Loading...</div>
         </div>
 
-        <div id="link-container"></div>
+        <div id="link-container">
+            </div>
         <div id="messageArea" class="message-area" style="display: none;"></div>
+
     </div>
 
     <div id="reportModal" class="modal">
@@ -237,6 +402,7 @@
         </div>
     </div>
 
+
     <script>
         // DOM Elements
         const themeSwitcherButton = document.getElementById('themeSwitcherButton');
@@ -246,24 +412,21 @@
         const filterButton = document.getElementById('filterAccessibleButton');
         const showAllButton = document.getElementById('showAllButton');
         const messageArea = document.getElementById('messageArea');
+        // Modal DOM Elements
         const reportModal = document.getElementById('reportModal');
         const modalCloseButton = document.getElementById('modalCloseButton');
         const modalCancelButton = document.getElementById('modalCancelButton');
         const reportReasonForm = document.getElementById('reportReasonForm');
         const modalLinkToReportElement = document.getElementById('modalLinkToReport');
 
+
         // App State
         let linksToCheck = [];
         let checkedLinksCount = 0;
         let totalLinks = 0;
+        const REPORTED_LINKS_KEY = 'reportedLinks'; 
         let currentUrlToReport = null; 
         let currentReportButtonElement = null; 
-        let reportedLinksCache = []; 
-
-        // Configuration for Cloudflare Worker URL
-        // IMPORTANT: Replace this with your actual deployed Cloudflare Worker URL
-        const API_BASE_URL = 'YOUR_CLOUDFLARE_WORKER_URL_HERE'; 
-        // Example: const API_BASE_URL = 'https://my-link-reporter.yourusername.workers.dev';
 
 
         // --- Utility Functions ---
@@ -271,15 +434,14 @@
             messageArea.textContent = text; 
             messageArea.className = `message-area ${type}`; 
             messageArea.style.display = 'block'; 
-            if (type === 'error' || type === 'info') {
-                setTimeout(clearMessage, 5000); 
-            }
         }
+
         function clearMessage() { 
             messageArea.style.display = 'none'; 
             messageArea.textContent = ''; 
             messageArea.className = 'message-area'; 
         }
+
         function updateProgressBar() { 
             const percentage = totalLinks > 0 ? (checkedLinksCount / totalLinks) * 100 : 0; 
             progressBarFillElement.style.width = percentage + '%'; 
@@ -291,6 +453,7 @@
                 progressBarFillElement.textContent = 'No links to check.'; 
             } 
         }
+
         function applyTheme(theme) { 
             if (theme === 'dark') { 
                 body.classList.add('dark-mode'); 
@@ -301,49 +464,17 @@
             } 
         }
 
-        // --- Reporting Logic (Cloudflare Worker Interaction) ---
-        async function fetchReportedLinks() {
-            if (!API_BASE_URL || API_BASE_URL === 'YOUR_CLOUDFLARE_WORKER_URL_HERE') {
-                console.warn("API_BASE_URL is not configured. Skipping fetch of reported links.");
-                reportedLinksCache = [];
-                return;
-            }
-            try {
-                const response = await fetch(`${API_BASE_URL}/reports`); // Ensure Worker handles GET /reports
-                if (!response.ok) {
-                    throw new Error(`Failed to fetch reported links: ${response.statusText} (${response.status})`);
-                }
-                reportedLinksCache = await response.json();
-            } catch (error) {
-                console.error("Error fetching reported links:", error);
-                reportedLinksCache = []; 
-            }
+        // --- Reporting Logic ---
+        function getReportedLinks() {
+            const stored = localStorage.getItem(REPORTED_LINKS_KEY);
+            return stored ? JSON.parse(stored) : [];
         }
 
-        async function storeReportedLinkOnWorker(url, reason) {
-             if (!API_BASE_URL || API_BASE_URL === 'YOUR_CLOUDFLARE_WORKER_URL_HERE') {
-                displayMessage("Reporting service is not configured.", "error");
-                return null;
-            }
-            try {
-                const response = await fetch(`${API_BASE_URL}/report`, { // Ensure Worker handles POST /report
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ url, reason }),
-                });
-                if (!response.ok) {
-                    const errorData = await response.json().catch(() => ({ message: `HTTP error ${response.status}` }));
-                    throw new Error(errorData.message || `Failed to report link: ${response.statusText}`);
-                }
-                // Add to local cache immediately for UI update
-                reportedLinksCache.push({ url, reason, reportedAt: new Date().toISOString() }); // Simulate local update
-                return await response.json();
-            } catch (error) {
-                console.error("Error reporting link:", error);
-                displayMessage(`Error reporting link: ${error.message}`, "error");
-                return null;
+        function storeReportedLink(url, reason) {
+            let reportedLinks = getReportedLinks();
+            if (!reportedLinks.some(report => report.url === url)) {
+                reportedLinks.push({ url: url, reason: reason, reportedAt: new Date().toISOString() });
+                localStorage.setItem(REPORTED_LINKS_KEY, JSON.stringify(reportedLinks));
             }
         }
 
@@ -354,6 +485,7 @@
             reportReasonForm.reset(); 
             reportModal.style.display = 'block';
         }
+
         function closeReportModal() {
             reportModal.style.display = 'none';
             currentUrlToReport = null;
@@ -372,7 +504,7 @@
             try {
                 const response = await fetch(url, {
                     method: 'HEAD',
-                    mode: 'no-cors', 
+                    mode: 'no-cors',
                     signal: AbortSignal.timeout(5000)
                 });
 
@@ -384,16 +516,20 @@
                     statusElement.textContent = '❓';
                     statusElement.className = 'status uncertain'; 
                     reportButton.style.display = 'none'; 
+                    console.warn(`Possible issue or non-OK status for ${url}: ${response.status}`);
                 }
             } catch (error) {
                 statusElement.textContent = '❌';
                 statusElement.className = 'status inaccessible';
                 reportButton.style.display = 'none'; 
+                console.error(`Error checking ${url}:`, error.name === 'AbortError' ? 'Timeout' : error);
             } finally {
                 checkedLinksCount++;
                 updateProgressBar();
                 
-                const isAlreadyReported = reportedLinksCache.some(report => report.url === url);
+                const reportedLinks = getReportedLinks();
+                const isAlreadyReported = reportedLinks.some(report => report.url === url);
+
                 if (reportButton.style.display === 'inline-block' && isAlreadyReported) {
                     reportButton.textContent = 'Reported';
                     reportButton.disabled = true;
@@ -403,17 +539,18 @@
 
         // --- Initialization ---
         async function initializeApp() {
+            // 1. Apply theme
             const savedTheme = localStorage.getItem('theme') || 'dark';
             applyTheme(savedTheme);
 
-            await fetchReportedLinks(); 
-
+            // 2. Setup Event Listeners
             themeSwitcherButton.addEventListener('click', () => { 
                 const currentTheme = body.classList.contains('dark-mode') ? 'dark' : 'light'; 
                 const newTheme = currentTheme === 'dark' ? 'light' : 'dark'; 
                 applyTheme(newTheme); 
                 localStorage.setItem('theme', newTheme); 
             });
+
             filterButton.addEventListener('click', () => { 
                 clearMessage(); 
                 const linkItems = linkContainer.querySelectorAll('.link-item'); 
@@ -421,45 +558,57 @@
                 linkItems.forEach(item => { 
                     const statusElement = item.querySelector('.status'); 
                     if (statusElement && statusElement.classList.contains('accessible')) { 
-                        item.style.display = 'flex'; accessibleFound = true; 
-                    } else { item.style.display = 'none'; } 
+                        item.style.display = 'flex'; 
+                        accessibleFound = true; 
+                    } else { 
+                        item.style.display = 'none'; 
+                    } 
                 }); 
                 if (accessibleFound || linkItems.length > 0) { 
-                    filterButton.style.display = 'none'; showAllButton.style.display = 'inline-block'; 
+                    filterButton.style.display = 'none'; 
+                    showAllButton.style.display = 'inline-block'; 
                 } 
             });
+
             showAllButton.addEventListener('click', () => { 
                 clearMessage(); 
                 const linkItems = linkContainer.querySelectorAll('.link-item'); 
-                linkItems.forEach(item => { item.style.display = 'flex'; }); 
-                showAllButton.style.display = 'none'; filterButton.style.display = 'inline-block'; 
+                linkItems.forEach(item => { 
+                    item.style.display = 'flex'; 
+                }); 
+                showAllButton.style.display = 'none'; 
+                filterButton.style.display = 'inline-block'; 
             });
+
             modalCloseButton.onclick = closeReportModal;
             modalCancelButton.onclick = closeReportModal;
             window.onclick = function(event) { 
-                if (event.target == reportModal) closeReportModal();
+                if (event.target == reportModal) {
+                    closeReportModal();
+                }
             }
-            reportReasonForm.addEventListener('submit', async function(event) {
+            reportReasonForm.addEventListener('submit', function(event) {
                 event.preventDefault();
                 const selectedReason = reportReasonForm.elements.reportReason.value;
                 if (!selectedReason) {
+                    // More user-friendly feedback than alert if possible, but alert is simple
                     displayMessage('Please select a reason for reporting.', 'error'); 
                     return;
                 }
                 if (currentUrlToReport && currentReportButtonElement) {
-                    const reportResult = await storeReportedLinkOnWorker(currentUrlToReport, selectedReason);
-                    if (reportResult) { 
-                        currentReportButtonElement.textContent = 'Reported';
-                        currentReportButtonElement.disabled = true;
-                        displayMessage('Link reported successfully!', 'info');
-                    }
+                    storeReportedLink(currentUrlToReport, selectedReason);
+                    currentReportButtonElement.textContent = 'Reported';
+                    currentReportButtonElement.disabled = true;
                 }
                 closeReportModal();
             });
 
+            // 3. Fetch and process links
             try {
                 const response = await fetch('links.txt');
-                if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}. Failed to load links.txt.`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}. Failed to load links.txt.`);
+                }
                 const textData = await response.text();
                 linksToCheck = textData.split('\n').map(link => link.trim()).filter(link => link);
                 totalLinks = linksToCheck.length;
@@ -467,16 +616,22 @@
                 updateProgressBar();
 
                 if (totalLinks === 0) { 
-                    displayMessage('No links found in links.txt.', 'info'); 
-                    progressBarFillElement.textContent = 'No links.'; return; 
+                    displayMessage('No links found in the links.txt file.', 'info'); 
+                    progressBarFillElement.textContent = 'No links.'; 
+                    return; 
                 }
 
                 linkContainer.innerHTML = '';
                 clearMessage();
+
                 linksToCheck.forEach(url => {
-                    if (!url.toLowerCase().startsWith('http://') && !url.toLowerCase().startsWith('https://')) {
-                        console.warn('Skipping invalid URL in links.txt:', url);
+                     if (!url.toLowerCase().startsWith('http://') && !url.toLowerCase().startsWith('https://')) {
+                        console.warn('Skipping invalid or non-HTTP(S) URL in links.txt:', url);
+                        // Optionally, you could decrement totalLinks and update progress bar here
+                        // if you want to completely exclude them from the count.
+                        // For now, checkLink will attempt to process it and likely mark it as an error.
                     }
+
                     const listItem = document.createElement('div');
                     listItem.classList.add('link-item');
                     listItem.innerHTML = `
@@ -490,13 +645,15 @@
                     `;
                     const reportButtonElement = listItem.querySelector('.report-button');
                     reportButtonElement.addEventListener('click', () => openReportModal(url, reportButtonElement));
+                    
                     linkContainer.appendChild(listItem);
-                    checkLink(url, listItem); 
+                    checkLink(url, listItem);
                 });
                 
                 if(totalLinks === 0 && textData.trim().length > 0) { 
-                    displayMessage('No valid links found to process.', 'info'); 
+                    displayMessage('No valid links were found in the file to process.', 'info'); 
                 }
+
             } catch (error) { 
                 console.error("Initialization Error:", error); 
                 displayMessage(`Error: ${error.message}`, 'error'); 
