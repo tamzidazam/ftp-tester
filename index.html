@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Link Checker :: Futuristic Edition</title>
+    <style>
+        :root {
+            --bg-color: #f0f4f8;
+            --text-color: #2c3e50;
+            --primary-accent: #3498db;
+            --secondary-accent: #e74c3c; /* Used for errors */
+            --warning-accent: #f39c12; /* For uncertain status */
+            --success-color: #2ecc71;
+            --card-bg-color: #ffffff;
+            --card-border-color: #dfe6e9;
+            --button-bg-color: var(--primary-accent);
+            --button-text-color: #ffffff;
+            --button-hover-bg-color: #2980b9;
+            --report-button-bg: var(--warning-accent); 
+            --report-button-hover-bg: #d35400;
+            --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            --glow-color: rgba(52, 152, 219, 0.7);
+            --progress-bar-bg: var(--card-border-color);
+            --progress-bar-fill-bg: var(--success-color);
+            --progress-bar-text-color: var(--button-text-color);
+            --modal-bg-color: rgba(0, 0, 0, 0.6);
+            --modal-content-bg: var(--card-bg-color);
+        }
+
+        body.dark-mode {
+            --bg-color: #1a1d24;
+            --text-color: #e0e6f0;
+            --primary-accent: #00aeff;
+            --secondary-accent: #ff4757;
+            --warning-accent: #f1c40f;
+            --success-color: #00e07f;
+            --card-bg-color: #2c303a;
+            --card-border-color: #3e4452;
+            --button-bg-color: var(--primary-accent);
+            --button-hover-bg-color: #007acc;
+            --report-button-bg: var(--warning-accent);
+            --report-button-hover-bg: #e67e22;
+            --glow-color: rgba(0, 174, 255, 0.7);
+            --progress-bar-bg: #3e4452;
+            --progress-bar-fill-bg: var(--success-color);
+            --progress-bar-text-color: #1a1d24;
+            --modal-content-bg: var(--card-bg-color);
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 10px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 10px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px; 
+            border-bottom: 1px solid var(--card-border-color);
+            padding-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        h1 {
+            color: var(--primary-accent);
+            font-size: 1.8em;
+            margin: 0 0 10px 0; 
+            text-shadow: 0 0 5px var(--glow-color);
+            flex-basis: 100%;
+            text-align: center;
+        }
+        
+        .header-controls {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            width: 100%;
+            justify-content: center;
+        }
+        
+        @media (min-width: 640px) {
+            body, .container { padding: 20px; }
+            h1 { font-size: 2em; flex-basis: auto; text-align: left; margin-bottom: 0; }
+            header { margin-bottom: 30px; flex-wrap: nowrap; }
+            .header-controls { width: auto; justify-content: flex-end; gap: 10px; }
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center; 
+        }
+
+        .button, .filter-button, #themeSwitcherButton, .report-button, .modal-button {
+            background-color: var(--button-bg-color);
+            color: var(--button-text-color);
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em; 
+            transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+            text-align: center;
+            flex-grow: 1;
+            flex-basis: calc(50% - 10px); 
+        }
+         @media (min-width: 480px) { 
+            .button, .filter-button, #themeSwitcherButton, .report-button, .modal-button {
+                 flex-grow: 0; 
+                 flex-basis: auto;
+            }
+         }
+
+        .button:hover, .filter-button:hover, #themeSwitcherButton:hover, 
+        .report-button:hover:not(:disabled), .modal-button:hover:not(:disabled) {
+            background-color: var(--button-hover-bg-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        #themeSwitcherButton { min-width: auto; padding: 10px 12px; }
+        
+        .nav-link { 
+            color: var(--primary-accent);
+            text-decoration: none;
+            padding: 10px 12px;
+            border-radius: 5px;
+            transition: background-color 0.2s ease;
+            font-size: 0.9em;
+        }
+        .nav-link:hover { background-color: var(--card-border-color); text-decoration: underline; }
+
+        .report-button {
+            background-color: var(--report-button-bg);
+            padding: 6px 10px; 
+            font-size: 0.8em;
+            margin-left: auto; 
+            flex-grow: 0; 
+            flex-basis: auto; 
+        }
+        .report-button:hover:not(:disabled) { background-color: var(--report-button-hover-bg); }
+        .report-button:disabled {
+            background-color: var(--card-border-color);
+            color: var(--text-color);
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .progress-bar-container { width: 100%; background-color: var(--progress-bar-bg); border-radius: 8px; height: 24px; margin-bottom: 25px; overflow: hidden; box-shadow: inset 0 1px 3px rgba(0,0,0,0.1); }
+        #progressBarFill { width: 0%; height: 100%; background-color: var(--progress-bar-fill-bg); border-radius: 8px; transition: width 0.4s ease-in-out, background-color 0.3s ease; display: flex; align-items: center; justify-content: center; color: var(--progress-bar-text-color); font-size: 0.85em; font-weight: 600; }
+        .link-item { background-color: var(--card-bg-color); border: 1px solid var(--card-border-color); border-left: 5px solid var(--primary-accent); padding: 10px 12px; margin-bottom: 15px; border-radius: 5px; display: flex; justify-content: space-between; align-items: center; transition: background-color 0.3s ease, border-color 0.3s ease; box-shadow: 0 2px 5px rgba(0,0,0,0.05); flex-wrap: wrap;  }
+        .link-info { flex-grow: 1;  margin-right: 10px;  word-break: break-all; font-size: 0.9em; padding-bottom: 5px; }
+        .link-item a { color: var(--primary-accent); text-decoration: none; font-weight: 500; }
+        .link-item a:hover { text-decoration: underline; }
+        .status-block { display: flex; align-items: center; flex-shrink: 0;  margin-top: 5px;  width: 100%; justify-content: space-between; }
+        @media (min-width: 480px) { .link-info { font-size: 1em; padding-bottom: 0; } .status-block { margin-top: 0; width: auto; justify-content: flex-start; } .report-button { margin-left: 10px; } }
+        .status { font-size: 1.3em; font-weight: bold; padding: 5px 8px; border-radius: 5px; min-width: 35px; text-align: center; }
+        .status.accessible { color: var(--success-color); border: 1px solid var(--success-color); box-shadow: 0 0 8px var(--success-color); }
+        .status.uncertain {  color: var(--warning-accent); border: 1px solid var(--warning-accent); box-shadow: 0 0 8px var(--warning-accent); }
+        .status.inaccessible {  color: var(--secondary-accent); border: 1px solid var(--secondary-accent); box-shadow: 0 0 8px var(--secondary-accent); }
+        .status.checking { color: var(--text-color); border: 1px solid var(--text-color); opacity: 0.7; }
+        .message-area { padding: 10px; margin-top: 10px; border-radius: 5px; text-align: center; font-size: 0.9em; }
+        .message-area.error { color: var(--secondary-accent); background-color: rgba(255, 71, 87, 0.1); }
+        .message-area.info { color: var(--text-color); background-color: rgba(0, 174, 255, 0.1); }
+
+        /* Modal Styles */
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: var(--modal-bg-color); }
+        .modal-content { background-color: var(--modal-content-bg); margin: 10% auto; padding: 20px; border: 1px solid var(--card-border-color); border-radius: 8px; width: 90%; max-width: 450px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); position: relative; }
+        .modal-close-button { color: var(--text-color); float: right; font-size: 24px; font-weight: bold; line-height: 1; }
+        .modal-close-button:hover, .modal-close-button:focus { color: var(--secondary-accent); text-decoration: none; cursor: pointer; }
+        .modal h2 { margin-top: 0; color: var(--primary-accent); font-size: 1.4em; margin-bottom: 15px; }
+        .modal-options label { display: block; margin-bottom: 10px; cursor: pointer; font-size: 0.95em; }
+        .modal-options input[type="radio"] { margin-right: 8px; accent-color: var(--primary-accent);  }
+        .modal-footer { margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px; }
+        .modal-button { flex-grow: 0; flex-basis: auto; }
+        .modal-button.submit { background-color: var(--success-color); }
+        .modal-button.submit:hover { background-color: #27ae60;  }
+        .modal-button.cancel { background-color: var(--secondary-accent); }
+        .modal-button.cancel:hover { background-color: #c0392b;  }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Link Pulse</h1>
+            <div class="header-controls">
+                <a href="reported_links.html" class="nav-link">View Reports</a>
+                <button id="themeSwitcherButton">Switch to Dark Mode</button>
+            </div>
+        </header>
+
+        <div class="controls">
+            <button id="filterAccessibleButton" class="filter-button">Show Only Accessible</button>
+            <button id="showAllButton" class="filter-button" style="display:none;">Show All Links</button>
+        </div>
+
+        <div class="progress-bar-container">
+            <div id="progressBarFill">Loading...</div>
+        </div>
+
+        <div id="link-container"></div>
+        <div id="messageArea" class="message-area" style="display: none;"></div>
+    </div>
+
+    <div id="reportModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close-button" id="modalCloseButton">&times;</span>
+            <h2>Report Link</h2>
+            <p id="modalLinkToReport" style="word-break: break-all; margin-bottom: 15px; font-size: 0.9em;"></p>
+            <form id="reportReasonForm">
+                <div class="modal-options">
+                    <label><input type="radio" name="reportReason" value="Not an FTP site" required> Not an FTP site</label>
+                    <label><input type="radio" name="reportReason" value="Not accessible (despite checker)"> Not accessible (despite checker)</label>
+                    <label><input type="radio" name="reportReason" value="Other reason"> Other reason</label>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="modalCancelButton" class="modal-button cancel">Cancel</button>
+                    <button type="submit" id="modalSubmitReportButton" class="modal-button submit">Submit Report</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const themeSwitcherButton = document.getElementById('themeSwitcherButton');
+        const body = document.body;
+        const linkContainer = document.getElementById('link-container');
+        const progressBarFillElement = document.getElementById('progressBarFill');
+        const filterButton = document.getElementById('filterAccessibleButton');
+        const showAllButton = document.getElementById('showAllButton');
+        const messageArea = document.getElementById('messageArea');
+        const reportModal = document.getElementById('reportModal');
+        const modalCloseButton = document.getElementById('modalCloseButton');
+        const modalCancelButton = document.getElementById('modalCancelButton');
+        const reportReasonForm = document.getElementById('reportReasonForm');
+        const modalLinkToReportElement = document.getElementById('modalLinkToReport');
+
+        // App State
+        let linksToCheck = [];
+        let checkedLinksCount = 0;
+        let totalLinks = 0;
+        let currentUrlToReport = null; 
+        let currentReportButtonElement = null; 
+        let reportedLinksCache = []; 
+
+        // Configuration for Cloudflare Worker URL
+        // IMPORTANT: Replace this with your actual deployed Cloudflare Worker URL
+        const API_BASE_URL = 'YOUR_CLOUDFLARE_WORKER_URL_HERE'; 
+        // Example: const API_BASE_URL = 'https://my-link-reporter.yourusername.workers.dev';
+
+
+        // --- Utility Functions ---
+        function displayMessage(text, type = 'info') { 
+            messageArea.textContent = text; 
+            messageArea.className = `message-area ${type}`; 
+            messageArea.style.display = 'block'; 
+            if (type === 'error' || type === 'info') {
+                setTimeout(clearMessage, 5000); 
+            }
+        }
+        function clearMessage() { 
+            messageArea.style.display = 'none'; 
+            messageArea.textContent = ''; 
+            messageArea.className = 'message-area'; 
+        }
+        function updateProgressBar() { 
+            const percentage = totalLinks > 0 ? (checkedLinksCount / totalLinks) * 100 : 0; 
+            progressBarFillElement.style.width = percentage + '%'; 
+            progressBarFillElement.textContent = Math.round(percentage) + '%'; 
+            progressBarFillElement.style.backgroundColor = 'var(--progress-bar-fill-bg)'; 
+            if (checkedLinksCount === totalLinks && totalLinks > 0) { 
+                setTimeout(() => { progressBarFillElement.textContent = 'All Checks Complete!'; }, 500); 
+            } else if (totalLinks === 0 && !progressBarFillElement.classList.contains('error')) { 
+                progressBarFillElement.textContent = 'No links to check.'; 
+            } 
+        }
+        function applyTheme(theme) { 
+            if (theme === 'dark') { 
+                body.classList.add('dark-mode'); 
+                themeSwitcherButton.textContent = 'Switch to Light Mode'; 
+            } else { 
+                body.classList.remove('dark-mode'); 
+                themeSwitcherButton.textContent = 'Switch to Dark Mode'; 
+            } 
+        }
+
+        // --- Reporting Logic (Cloudflare Worker Interaction) ---
+        async function fetchReportedLinks() {
+            if (!API_BASE_URL || API_BASE_URL === 'YOUR_CLOUDFLARE_WORKER_URL_HERE') {
+                console.warn("API_BASE_URL is not configured. Skipping fetch of reported links.");
+                reportedLinksCache = [];
+                return;
+            }
+            try {
+                const response = await fetch(`${API_BASE_URL}/reports`); // Ensure Worker handles GET /reports
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch reported links: ${response.statusText} (${response.status})`);
+                }
+                reportedLinksCache = await response.json();
+            } catch (error) {
+                console.error("Error fetching reported links:", error);
+                reportedLinksCache = []; 
+            }
+        }
+
+        async function storeReportedLinkOnWorker(url, reason) {
+             if (!API_BASE_URL || API_BASE_URL === 'YOUR_CLOUDFLARE_WORKER_URL_HERE') {
+                displayMessage("Reporting service is not configured.", "error");
+                return null;
+            }
+            try {
+                const response = await fetch(`${API_BASE_URL}/report`, { // Ensure Worker handles POST /report
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ url, reason }),
+                });
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({ message: `HTTP error ${response.status}` }));
+                    throw new Error(errorData.message || `Failed to report link: ${response.statusText}`);
+                }
+                // Add to local cache immediately for UI update
+                reportedLinksCache.push({ url, reason, reportedAt: new Date().toISOString() }); // Simulate local update
+                return await response.json();
+            } catch (error) {
+                console.error("Error reporting link:", error);
+                displayMessage(`Error reporting link: ${error.message}`, "error");
+                return null;
+            }
+        }
+
+        function openReportModal(url, buttonElement) {
+            currentUrlToReport = url;
+            currentReportButtonElement = buttonElement;
+            modalLinkToReportElement.textContent = `URL: ${url}`;
+            reportReasonForm.reset(); 
+            reportModal.style.display = 'block';
+        }
+        function closeReportModal() {
+            reportModal.style.display = 'none';
+            currentUrlToReport = null;
+            currentReportButtonElement = null;
+        }
+
+        // --- Link Checking Logic ---
+        async function checkLink(url, listItem) {
+            const statusElement = listItem.querySelector('.status');
+            const reportButton = listItem.querySelector('.report-button');
+            
+            reportButton.style.display = 'none'; 
+            statusElement.textContent = '...';
+            statusElement.className = 'status checking';
+
+            try {
+                const response = await fetch(url, {
+                    method: 'HEAD',
+                    mode: 'no-cors', 
+                    signal: AbortSignal.timeout(5000)
+                });
+
+                if (response.type === 'opaque' || response.ok) {
+                    statusElement.textContent = '✔';
+                    statusElement.className = 'status accessible';
+                    reportButton.style.display = 'inline-block'; 
+                } else {
+                    statusElement.textContent = '❓';
+                    statusElement.className = 'status uncertain'; 
+                    reportButton.style.display = 'none'; 
+                }
+            } catch (error) {
+                statusElement.textContent = '❌';
+                statusElement.className = 'status inaccessible';
+                reportButton.style.display = 'none'; 
+            } finally {
+                checkedLinksCount++;
+                updateProgressBar();
+                
+                const isAlreadyReported = reportedLinksCache.some(report => report.url === url);
+                if (reportButton.style.display === 'inline-block' && isAlreadyReported) {
+                    reportButton.textContent = 'Reported';
+                    reportButton.disabled = true;
+                }
+            }
+        }
+
+        // --- Initialization ---
+        async function initializeApp() {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            applyTheme(savedTheme);
+
+            await fetchReportedLinks(); 
+
+            themeSwitcherButton.addEventListener('click', () => { 
+                const currentTheme = body.classList.contains('dark-mode') ? 'dark' : 'light'; 
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark'; 
+                applyTheme(newTheme); 
+                localStorage.setItem('theme', newTheme); 
+            });
+            filterButton.addEventListener('click', () => { 
+                clearMessage(); 
+                const linkItems = linkContainer.querySelectorAll('.link-item'); 
+                let accessibleFound = false; 
+                linkItems.forEach(item => { 
+                    const statusElement = item.querySelector('.status'); 
+                    if (statusElement && statusElement.classList.contains('accessible')) { 
+                        item.style.display = 'flex'; accessibleFound = true; 
+                    } else { item.style.display = 'none'; } 
+                }); 
+                if (accessibleFound || linkItems.length > 0) { 
+                    filterButton.style.display = 'none'; showAllButton.style.display = 'inline-block'; 
+                } 
+            });
+            showAllButton.addEventListener('click', () => { 
+                clearMessage(); 
+                const linkItems = linkContainer.querySelectorAll('.link-item'); 
+                linkItems.forEach(item => { item.style.display = 'flex'; }); 
+                showAllButton.style.display = 'none'; filterButton.style.display = 'inline-block'; 
+            });
+            modalCloseButton.onclick = closeReportModal;
+            modalCancelButton.onclick = closeReportModal;
+            window.onclick = function(event) { 
+                if (event.target == reportModal) closeReportModal();
+            }
+            reportReasonForm.addEventListener('submit', async function(event) {
+                event.preventDefault();
+                const selectedReason = reportReasonForm.elements.reportReason.value;
+                if (!selectedReason) {
+                    displayMessage('Please select a reason for reporting.', 'error'); 
+                    return;
+                }
+                if (currentUrlToReport && currentReportButtonElement) {
+                    const reportResult = await storeReportedLinkOnWorker(currentUrlToReport, selectedReason);
+                    if (reportResult) { 
+                        currentReportButtonElement.textContent = 'Reported';
+                        currentReportButtonElement.disabled = true;
+                        displayMessage('Link reported successfully!', 'info');
+                    }
+                }
+                closeReportModal();
+            });
+
+            try {
+                const response = await fetch('links.txt');
+                if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}. Failed to load links.txt.`);
+                const textData = await response.text();
+                linksToCheck = textData.split('\n').map(link => link.trim()).filter(link => link);
+                totalLinks = linksToCheck.length;
+                checkedLinksCount = 0; 
+                updateProgressBar();
+
+                if (totalLinks === 0) { 
+                    displayMessage('No links found in links.txt.', 'info'); 
+                    progressBarFillElement.textContent = 'No links.'; return; 
+                }
+
+                linkContainer.innerHTML = '';
+                clearMessage();
+                linksToCheck.forEach(url => {
+                    if (!url.toLowerCase().startsWith('http://') && !url.toLowerCase().startsWith('https://')) {
+                        console.warn('Skipping invalid URL in links.txt:', url);
+                    }
+                    const listItem = document.createElement('div');
+                    listItem.classList.add('link-item');
+                    listItem.innerHTML = `
+                        <div class="link-info">
+                            <a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>
+                        </div>
+                        <div class="status-block">
+                            <span class="status checking">...</span>
+                            <button class="report-button" style="display:none;">Report</button>
+                        </div>
+                    `;
+                    const reportButtonElement = listItem.querySelector('.report-button');
+                    reportButtonElement.addEventListener('click', () => openReportModal(url, reportButtonElement));
+                    linkContainer.appendChild(listItem);
+                    checkLink(url, listItem); 
+                });
+                
+                if(totalLinks === 0 && textData.trim().length > 0) { 
+                    displayMessage('No valid links found to process.', 'info'); 
+                }
+            } catch (error) { 
+                console.error("Initialization Error:", error); 
+                displayMessage(`Error: ${error.message}`, 'error'); 
+                progressBarFillElement.style.width = '100%'; 
+                progressBarFillElement.style.backgroundColor = 'var(--secondary-accent)'; 
+                progressBarFillElement.textContent = 'Error Loading Links!'; 
+                progressBarFillElement.classList.add('error'); 
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', initializeApp);
+    </script>
+</body>
+</html>
